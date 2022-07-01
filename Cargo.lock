@@ -70,7 +70,7 @@ checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 [[package]]
 name = "cichlid"
 version = "0.2.1"
-source = "git+https://github.com/simmsb/cichlid.git#6468b1bab89a5548bc50ff0d7b08754d9f6b84d7"
+source = "git+https://github.com/simmsb/cichlid.git#a56471d56cc59dd171b7004b34467c3db3ae0f98"
 
 [[package]]
 name = "cortex-m"
@@ -220,6 +220,7 @@ dependencies = [
  "defmt-rtt",
  "embedded-hal",
  "fugit",
+ "micromath",
  "panic-probe",
  "smart-leds",
  "stm32f1xx-hal",
@@ -231,6 +232,12 @@ name = "memchr"
 version = "2.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2dffe52ecf27772e601905b7522cb4ef790d2cc203488bbd0e2fe85fcb74566d"
+
+[[package]]
+name = "micromath"
+version = "2.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "39617bc909d64b068dcffd0e3e31679195b5576d0c83fadc52690268cc2b2b55"
 
 [[package]]
 name = "nb"

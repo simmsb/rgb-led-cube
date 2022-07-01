@@ -158,7 +158,7 @@ const fn f32_powf(a: f32, n: f32) -> f32 {
 }
 
 const fn temporal_dither_for_level<const STEPS: usize>(level: f32, gamma: f32) -> [u8; STEPS] {
-    let gamma_corrected = (f32_powf(level / 255.0, gamma) * 255.0) + 0.5;
+    let gamma_corrected = f32_powf(level / 255.0, gamma) * 255.0 + 0.3;
 
     let up_count = (f32_fract(gamma_corrected) * STEPS as f32) as usize;
     let down_count = STEPS - up_count;
@@ -187,7 +187,7 @@ const fn temporal_dither_for_level<const STEPS: usize>(level: f32, gamma: f32) -
 const fn gen_gamma_dither<const STEPS: usize>(gamma: f32) -> [[u8; STEPS]; 256] {
     let mut result = [[0u8; STEPS]; 256];
 
-    let mut i = 0;
+    let mut i = 1;
     while i < 256 {
         result[i] = temporal_dither_for_level::<STEPS>(i as f32, gamma);
         i += 1;
@@ -202,6 +202,8 @@ impl<const STEPS: usize, const GAMMA: u32> GammaDither<STEPS, GAMMA> {
     const MAP: [[u8; STEPS]; 256] = gen_gamma_dither::<STEPS>(GAMMA as f32 / 10.0);
 
     pub fn dither(step: usize, it: impl Iterator<Item = RGB8>) -> impl Iterator<Item = RGB8> {
+        defmt::trace!("{:#?}", Self::MAP);
+
         it.map(move |c| {
             RGB8::new(
                 Self::MAP[c.r as usize][step],

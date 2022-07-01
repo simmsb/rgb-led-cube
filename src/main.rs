@@ -9,6 +9,7 @@ use hal::{gpio::GpioExt, prelude::_stm32_hal_flash_FlashExt, rcc::RccExt};
 use led_test as _;
 
 use led_test::dither::GammaDither;
+use micromath::F32Ext;
 use smart_leds::RGB8;
 use stm32f1xx_hal as hal;
 
@@ -55,25 +56,28 @@ fn main() -> ! {
 
     let mut leds = ws2812_spi::Ws2812::new(spi);
 
-    let mut i = 0u8;
+    let mut i = 0u16;
+    let mut brightness: f32 = 0.0;
 
-    const STEPS: usize = 16;
+    const STEPS: usize = 8;
 
     loop {
+        let value = ((brightness.to_radians().sin() + 1.0) * 127.0) as u8;
         for step in 0..STEPS {
             let it = (0..10).map(|x| {
                 let v = cichlid::HSV {
-                    h: i.wrapping_add(x * 10),
-                    s: 255,
-                    v: 127,
+                    h: ((i / 4) as u8).wrapping_add(x * 10),
+                    s: value,
+                    v: value,
                 };
                 conv_colour(v.to_rgb_rainbow())
             });
 
             let _ = leds.write(into_grb(GammaDither::<STEPS, 28>::dither(step, it)));
 
-            delay.delay_us(500u32);
+            delay.delay_us(100u32);
         }
         i = i.wrapping_add(1);
+        brightness += 0.1;
     }
 }
